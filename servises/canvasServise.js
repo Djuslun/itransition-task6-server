@@ -2,13 +2,13 @@ const CanvasModel = require('../models/canvasModel')
 
 class CanvasServise {
   async createCanvas(canvas) {
-    const createdCanvas = await CanvasModel.create(canvas)
+    const createdCanvas = await CanvasModel.create({ canvas })
     return createdCanvas
   }
 
   async updateCanvas(canvas, canvasId) {
-    const updatedCanvas = await CanvasModel.updateOne(
-      canvasId,
+    const updatedCanvas = await CanvasModel.findByIdAndUpdate(
+      { _id: canvasId },
       { $set: { shapes: canvas } },
       { new: true })
     return updatedCanvas
