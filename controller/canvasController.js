@@ -5,7 +5,7 @@ const emitter = new events.EventEmitter();
 class CanvasController {
   async createCanvas(req, res) {
     try {
-      const createdCanvas = await canvasService.createCanvas([])
+      const createdCanvas = await canvasService.createCanvas([], {})
       return res.json(createdCanvas)
     } catch (e) {
       return res.status(500).json()
@@ -15,8 +15,8 @@ class CanvasController {
   async updateCanvas(req, res) {
     try {
       const { canvasId } = req.params
-      const { shapes } = req.body
-      const updatedCanvas = await canvasService.updateCanvas(shapes, canvasId)
+      const { shapes, user } = req.body
+      const updatedCanvas = await canvasService.updateCanvas(shapes, user, canvasId)
       emitter.emit('changedCanvas', updatedCanvas);
       return res.json(updatedCanvas)
     } catch (e) {
@@ -27,7 +27,6 @@ class CanvasController {
 
   async getChangedCanvas(req, res) {
     emitter.once('changedCanvas', (canvas) => {
-      console.log(canvas.shapes.length)
       return res.json(canvas);
     });
   }
@@ -42,14 +41,16 @@ class CanvasController {
     }
   }
 
-  // async deleteCanvas(req, res) {
-  //   try {
+  async deleteCanvas(req, res) {
+    try {
+      const { canvasId } = req.params
+      const deletedCanvas = await canvasService.deleteCanvas(canvasId)
+      res.json(deletedCanvas)
+    } catch (e) {
+      return res.status(500)
 
-  //   } catch (e) {
-  //     return res.status(500)
-
-  //   }
-  // }
+    }
+  }
 
   async getAllCanvases(req, res) {
     try {

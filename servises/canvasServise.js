@@ -1,15 +1,15 @@
 const CanvasModel = require('../models/canvasModel')
 
 class CanvasServise {
-  async createCanvas(canvas) {
-    const createdCanvas = await CanvasModel.create({ canvas })
+  async createCanvas(canvas, lastUpdater) {
+    const createdCanvas = await CanvasModel.create({ shapes: canvas, lastUpdater })
     return createdCanvas
   }
 
-  async updateCanvas(canvas, canvasId) {
+  async updateCanvas(canvas, user, canvasId) {
     const updatedCanvas = await CanvasModel.findByIdAndUpdate(
       { _id: canvasId },
-      { $set: { shapes: canvas } },
+      { $set: { shapes: canvas, lastUpdater: user } },
       { new: true })
     return updatedCanvas
   }
@@ -20,6 +20,10 @@ class CanvasServise {
 
   async getAllCanvases() {
     return await CanvasModel.find()
+  }
+
+  async deleteCanvas(id) {
+    return await CanvasModel.findByIdAndDelete(id)
   }
 }
 
